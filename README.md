@@ -5,7 +5,7 @@ BLE Demo - Communication between Android App and ESP32 in BLE mode.
 We have an ESP32 where we want to control the brightness of the "internal LED". 
 The brightness is to be controlled via an androida app.
 
-For the communication I'm using BLE (Bluetooth Low Energie) - as this provides a modern way for the communication, although it adds a little more overhead compared to "Bluetooth classic". 
+For the communication we're using BLE (Bluetooth Low Energie) - as this provides a modern way for the communication, although it adds a little more overhead compared to "Bluetooth classic". 
 For the implementation this means the ESP32 will need to setup a BLE service with one characteristic, representing the LED brightness. The android app on the other side will need to find the service, connect to the service and write the desired LED brightness (represented as integer 0-255) to the characteristic.
 
 ## What it does not 😃
