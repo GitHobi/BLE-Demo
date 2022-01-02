@@ -41,7 +41,7 @@ The code has some important parts:
 
 * At the beginning there are two UUIDs defined ... these will later be usded to intentify the BLE service and the corresponding characteristic. 
 * There is a `MyServerCallbacks` class. The important function here is `onConnect`, containing a `startAdvertising` - this is needed to keep the advertisement of the BLE service up, even if a client connected. 
-* Thre is also `MyCallbacks` ... here we find the `onWrite` function, which will be invoked, once a client sends new data. Here we also change the brightness of the LED. 
+* There is also `MyCallbacks` ... here we find the `onWrite` function, which will be invoked, once a client sends new data. Here we also change the brightness of the LED. 
 Please notice that the data is sent as `string` - even if we want integer values. This is just for simplicity. 
 * The `setup` function is pretty simple. It mainly initializes the `BLEDevice`, creates a `BLEService`, adds the `BLECharacteristic` ... and finally starts advertising the service.
 
