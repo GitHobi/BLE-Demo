@@ -8,7 +8,7 @@ The brightness is to be controlled via an androida app.
 For the communication I'm using BLE (Bluetooth Low Energie) - as this provides a modern way for the communication, although it adds a little more overhead compared to "Bluetooth classic". 
 For the implementation this means the ESP32 will need to setup a BLE service with one characteristic, representing the LED brightness. The android app on the other side will need to find the service, connect to the service and write the desired LED brightness (represented as integer 0-255) to the characteristic.
 
-## What it does not :)
+## What it does not 😃
 * There is not too much error checking - just a demo!
 * code is not cleaned up - there is a lot of smell!
 
@@ -49,7 +49,7 @@ Most of the code is taken from the Arduino ESP32 BLE examples. If you need more 
 
 ## The Android part
 
-... is actually not too complicated, you find the Andriod Studio code in "BLEDemo App".
+... is actually not too complicated, you find the Andriod Studio code in "BLEDemo App". Be aware, the code is written in kotlin!
 
 There is only the `MainActivity`, which has two buttons an one slider (SeekBar).
 * The connect button enables bluetooth and starts the scan process + connecting to the (hopefully) found ESP32.
@@ -60,7 +60,7 @@ There is only the `MainActivity`, which has two buttons an one slider (SeekBar).
 
 * `onCreate()`\
 Here we check for the Android version and for some needed permissions. This is rather important!
-We want to search the ESP32 via a BLE scan. For this to work you need to have "location permissions", which you cannot gain by a simple configuration, the user needs to explicitly grant these permission - so you need to ask for them!\
+We want to search the ESP32 via a BLE scan. For this to work you need to have "location permissions", which you cannot gain by a simple configuration, the user needs to explicitly grant these permission - so you need to ask for them⚠️ \
 This is mainly done via an `AlertDialog` - where in the `DismissListener` the needed permissions are requested from the system. This will popup a system dialog, asking the user to grant the permissions ...\
 \
 What also happens here is that we add a `onSeekBarChangeListener` - to be able to react on changes later. 
