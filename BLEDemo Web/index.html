@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BLE Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header {
+            width:100%;
+            height:50px; 
+            display: flex;  
+            align-items: center; 
+            padding: 0px 0px 0px 16px; 
+            background-color:#6000FF;
+            color:white; 
+            font-weight: bold;
+        }
+
+        .myButton {
+            width: 150px;
+            height: 50px;
+            margin: 16px 0px 0px 16px;
+            display: flex;
+            align-items: center;
+            color:white;
+            background-color: #6000FF;
+        }
+
+        .myButton:disabled {
+            width: 150px;
+            height: 50px;
+            margin: 16px 0px 0px 16px;
+            display: flex;
+            align-items: center;
+            color:gray;
+            background-color:darkgrey;
+        }
+
+        .mySlider {
+            width: 100%;
+            margin: 16px 0px 0px 0px
+        }
+    </style>
+
+    <script>
+
+        var myCharacteristic = null;
+        var mybluethoothDevice = null;
+
+        function onBtnConnectClicked() {
+
+            navigator.bluetooth.requestDevice({
+                filters: [{
+                    services: ['4fafc201-1fb5-459e-8fcc-c5c9c331914c']
+                }]
+            })
+                .then(device => {
+                    console.log(device.name);
+                    device.addEventListener('gattserverdisconnected', onDisconnected);
+                    mybluethoothDevice = device;
+                    return device.gatt.connect();
+                })
+                .then(server => {
+                    // Getting Battery Service…
+                    return server.getPrimaryService('4fafc201-1fb5-459e-8fcc-c5c9c331914c');
+                })
+                .then(service => {
+                    // Getting Battery Level Characteristic…
+                    return service.getCharacteristic('beb5483e-36e1-4688-b7f5-ea07361b26a9');
+                })
+                .then(characteristic => {
+                    myCharacteristic = characteristic
+                    return characteristic.readValue();
+                })
+                .then(value => {
+                    var enc = new TextDecoder("utf-8");
+                    var v = parseInt(enc.decode(value.buffer));
+                    console.log("current value is " + v);
+                    document.getElementById("mySlider").value = v
+
+                    document.getElementById("mySlider").disabled = false;
+                    document.getElementById("btnConnect").disabled = true;
+                    document.getElementById("btnDisconnect").disabled = false;
+
+                    document.getElementById("imgConnect").src = "play_d.png"
+                    document.getElementById("imgDisconnect").src = "pause_e.png"
+                })
+                .catch(error => { console.error(error); });
+        }
+
+        function onDisconnected(event) {
+            const device = event.target;
+            console.log(`Device ${device.name} is disconnected.`);
+            document.getElementById("mySlider").disabled = true;
+            document.getElementById("btnConnect").disabled = false;
+            document.getElementById("btnDisconnect").disabled = true;
+            document.getElementById("mySlider").value = 0;
+            document.getElementById("imgConnect").src = "play_e.png"
+            document.getElementById("imgDisconnect").src = "pause_d.png"
+        }
+
+        function onBtnDisconnectClicked() {
+            if (!mybluethoothDevice) {
+                return;
+            }
+            if (mybluethoothDevice.gatt.connected) {
+                mybluethoothDevice.gatt.disconnect();
+            } else {
+                console.log('Not connected - nothing to do!');
+            }
+        }
+
+
+        function onSliderChanged() {
+            if (myCharacteristic == null)
+                return
+            var newValue = "" + document.getElementById("mySlider").value;
+            var enc = new TextEncoder();
+            myCharacteristic.writeValue(enc.encode(newValue));
+        }
+        
+    </script>
+
+
+</head>
+
+<body>
+    <div
+        class="header">
+        BLE Demo
+    </div>
+
+    <div style="display: flex;      align-items: center">
+        <button id="btnConnect" class="myButton" onclick="onBtnConnectClicked()"><img id="imgConnect" src="play_e.png">Verbinden</button>
+        <button id="btnDisconnect" type="button" disabled class="myButton" onclick="onBtnDisconnectClicked()"><img id="imgDisconnect" src="pause_d.png">Trennen</button>
+    </div>
+    <input type="range" disabled min="0" max="255" value="0" class="mySlider" id="mySlider"
+        onchange="onSliderChanged()">
+</body>
+
+</html>

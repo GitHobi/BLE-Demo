@@ -109,17 +109,19 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private var bluetoothLeScanner: BluetoothLeScanner? = null
+    lateinit var bluetoothLeScanner: BluetoothLeScanner
     private var scanning = false
     private val SCAN_PERIOD: Long = 20000
 
     private fun scanLeDevice() {
+
+
         if (!scanning) {
 
             Handler(Looper.getMainLooper()).postDelayed({
                 Log.v("BLEDemo", "Stop scanning");
                 scanning = false
-                bluetoothLeScanner?.stopScan(leScanCallback)
+                bluetoothLeScanner.stopScan(leScanCallback)
             }, SCAN_PERIOD)
 
             val scanFilter = ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(SERVICE_UUID)).build()
@@ -127,12 +129,12 @@ class MainActivity : AppCompatActivity() {
             val scanSettings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build()
 
             scanning = true
-            bluetoothLeScanner?.startScan(listOf(scanFilter), scanSettings, leScanCallback)
+            bluetoothLeScanner.startScan(listOf(scanFilter), scanSettings, leScanCallback)
             Log.v("BLEDemo", "Started scan process");
 
         } else {
             scanning = false
-            bluetoothLeScanner?.stopScan(leScanCallback)
+            bluetoothLeScanner.stopScan(leScanCallback)
         }
     }
 
@@ -247,7 +249,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             Log.v("BLEDemo", "Start Scanning");
-            bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
+            bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
 
             scanLeDevice()
         }
